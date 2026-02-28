@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paras Mittal | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #040507;
+      --surface: #0f1116;
+      --surface-soft: #131722;
+      --text: #f5f7ff;
+      --muted: #a3adc2;
+      --accent: #3b82ff;
+      --accent-soft: rgba(59, 130, 255, 0.18);
+      --border: rgba(255,255,255,0.12);
+      --glass: rgba(255,255,255,0.08);
+      --shadow: 0 20px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --nav-h: 76px;
+    }
+
+    body.light {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface-soft: #f6f8ff;
+      --text: #0c1222;
+      --muted: #4c5875;
+      --accent: #2463ff;
+      --accent-soft: rgba(36, 99, 255, 0.1);
+      --border: rgba(17,25,40,0.12);
+      --glass: rgba(255,255,255,0.55);
+      --shadow: 0 15px 40px rgba(36, 44, 72, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 0%, #10162a 0%, var(--bg) 35%) fixed;
+      color: var(--text);
+      line-height: 1.5;
+      transition: background .35s ease, color .35s ease;
+    }
+
+    body.light { background: linear-gradient(180deg, #f9fbff, #eff4ff) fixed; }
+
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #05070d;
+      display: grid;
+      place-items: center;
+      transition: opacity .6s ease, visibility .6s ease;
+    }
+
+    #loader.hide { opacity: 0; visibility: hidden; }
+
+    .loader-ring {
+      width: 64px; height: 64px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes float { 50% { transform: translateY(-8px); } }
+
+    nav {
+      position: sticky;
+      top: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid transparent;
+      transition: all .35s ease;
+    }
+
+    nav.shrink {
+      height: 62px;
+      background: color-mix(in srgb, var(--surface) 74%, transparent);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-wrap {
+      width: min(1120px, 92vw);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand { font-weight: 800; letter-spacing: .08em; font-size: .92rem; }
+    .nav-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-weight: 500; font-size: .95rem;
+      transition: color .25s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .btn, button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: .56rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s ease, background .25s ease, border-color .25s ease;
+    }
+    .btn:hover, button:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(120deg, var(--accent), #54a6ff);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    main section {
+      width: min(1120px, 92vw);
+      margin: 0 auto;
+      padding: 5rem 0;
+    }
+
+    #hero {
+      width: 100%;
+      min-height: calc(100vh - var(--nav-h));
+      display: grid;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 3rem 0;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: -30% -10% auto;
+      height: 80vh;
+      background: radial-gradient(circle at 75% 25%, rgba(59,130,255,.24), transparent 42%), radial-gradient(circle at 20% 70%, rgba(120,89,255,.22), transparent 35%);
+      z-index: -1;
+      transform: translateY(var(--parallax, 0px));
+      transition: transform .12s linear;
+    }
+
+    .hero-grid {
+      width: min(1120px, 92vw);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 0 0 .8rem;
+      font-size: clamp(2.1rem, 5vw, 4.5rem);
+      line-height: 1.03;
+      letter-spacing: -.03em;
+    }
+
+    .hero-kicker { font-size: .9rem; text-transform: uppercase; letter-spacing: .15em; color: var(--accent); font-weight: 700; }
+    .hero-subtitle { font-size: clamp(1.05rem, 2.8vw, 1.6rem); font-weight: 600; color: var(--muted); min-height: 2rem; }
+    .lead { font-size: 1.1rem; color: var(--muted); max-width: 60ch; }
+
+    .photo-placeholder {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 1rem;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      text-align: center;
+      position: relative;
+    }
+
+    .photo-placeholder img {
+      width: 100%; aspect-ratio: 4/5; border-radius: 24px; object-fit: cover;
+      background: linear-gradient(145deg, #111a2e, #0a0e17);
+    }
+
+    .upload-photo { display: none; margin-top: .9rem; }
+    body.edit-mode .upload-photo { display: inline-flex; }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      margin: 0 0 1.5rem;
+      letter-spacing: -.02em;
+    }
+
+    .glass-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    #about .glass-card { padding: 1.4rem 1.5rem; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: .9rem;
+    }
+
+    .skill-item { padding: 1rem; }
+    .skill-head { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: .6rem; }
+    .skill-bar { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .skill-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #73b0ff); border-radius: inherit; }
+
+    .timeline { position: relative; margin-top: 2rem; }
+    .timeline::before {
+      content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(var(--accent), transparent);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      width: calc(50% - 1.4rem);
+      margin-bottom: 1.3rem;
+      padding: 1rem 1.1rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: .65s ease;
+    }
+    .timeline-item.show { opacity: 1; transform: translateY(0); }
+
+    .timeline-item:nth-child(odd) { margin-right: auto; }
+    .timeline-item:nth-child(even) { margin-left: auto; }
+    .timeline-dot {
+      position: absolute; top: 18px; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft);
+    }
+    .timeline-item:nth-child(odd) .timeline-dot { right: -1.72rem; }
+    .timeline-item:nth-child(even) .timeline-dot { left: -1.72rem; }
+
+    .meta { color: var(--muted); font-size: .9rem; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .project-card {
+      overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 45px rgba(43,118,255,0.22);
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+    }
+    .project-thumb {
+      height: 150px;
+      background: linear-gradient(130deg, rgba(59,130,255,.2), rgba(167,114,255,.18));
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+    .project-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .project-body { padding: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tag { padding: .2rem .5rem; border: 1px solid var(--border); border-radius: 999px; font-size: .75rem; color: var(--muted); }
+
+    .project-actions, .timeline-actions { display: none; gap: .4rem; margin-top: .6rem; }
+    body.edit-mode .project-actions, body.edit-mode .timeline-actions { display: flex; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: .7s ease; }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+
+    form { display: grid; gap: .8rem; }
+    input, textarea {
+      width: 100%;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      padding: .82rem .9rem;
+      font: inherit;
+    }
+
+    textarea { min-height: 130px; resize: vertical; }
+    .icon-links { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1rem; }
+    .icon-links a {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--border); display: grid; place-items: center;
+      color: var(--text); text-decoration: none; background: var(--surface);
+    }
+
+    [data-editable="true"] { cursor: text; }
+    body.edit-mode [data-editable="true"] { outline: 1px dashed transparent; }
+    body.edit-mode [data-editable="true"]:hover { outline-color: var(--accent); }
+
+    #admin-fab {
+      display: none;
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 1600;
+      gap: .6rem;
+      align-items: center;
+      flex-direction: column;
+    }
+    body.edit-mode #admin-fab { display: flex; }
+
+    .small-btn { padding: .5rem .75rem; font-size: .85rem; border-radius: 12px; }
+
+    #lockIcon {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(1,3,8,.67);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+    }
+    .modal.show { display: flex; }
+    .modal-card {
+      width: min(560px, 96vw);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 1rem;
+    }
+
+    .success-pop {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translate(-50%, -12px);
+      background: linear-gradient(120deg, #1f7aff, #16b0ff);
+      color: #fff;
+      border-radius: 999px;
+      padding: .6rem 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: .35s ease;
+      z-index: 2100;
+    }
+    .success-pop.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .timeline::before { left: 10px; }
+      .timeline-item { width: 100%; margin-left: 0 !important; padding-left: 2rem; }
+      .timeline-item .timeline-dot { left: 4px !important; right: auto !important; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loader"><div class="loader-ring"></div></div>
+  <div class="success-pop" id="successPop">Saved successfully ✓</div>
+
+  <nav id="navbar">
+    <div class="nav-wrap">
+      <div class="brand" data-editable="true" data-key="brand">P•M</div>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div style="display:flex;gap:.6rem;align-items:center;">
+        <button id="themeToggle" class="small-btn">☀︎</button>
+      </div>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-grid">
+      <div class="reveal">
+        <div class="hero-kicker">Portfolio</div>
+        <h1 data-editable="true" data-key="name">Paras Mittal</h1>
+        <div class="hero-subtitle" id="typing" data-source="Passionate STEM Educator • Robotics • AI • IoT"></div>
+        <p class="lead" data-editable="true" data-key="tagline">Designing immersive, project-based STEM journeys that turn learners into confident innovators.</p>
+        <div style="display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;">
+          <a class="btn btn-primary" href="#contact">Contact Me</a>
+          <a class="btn" href="#projects">View Work</a>
+        </div>
+      </div>
+      <div class="photo-placeholder reveal">
+        <img id="profileImage" alt="Profile placeholder" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='900' viewBox='0 0 700 900'%3E%3Crect width='700' height='900' fill='%230d1320'/%3E%3Ccircle cx='350' cy='320' r='140' fill='%23253a61'/%3E%3Crect x='170' y='500' width='360' height='220' rx='110' fill='%23253a61'/%3E%3Ctext x='350' y='840' text-anchor='middle' fill='%2394a9d5' font-size='38' font-family='Arial'%3EUpload Photo%3C/text%3E%3C/svg%3E" />
+        <button class="btn upload-photo" id="uploadPhotoBtn">Upload Photo</button>
+        <input id="photoInput" type="file" accept="image/*" hidden />
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section id="about" class="reveal">
+      <h2 class="section-title">About Me</h2>
+      <div class="glass-card" data-editable="true" data-key="about">Passionate STEM educator specializing in Makerspace, Robotics, AI, and IoT education, with experience designing scalable curricula and delivering immersive learning across schools, colleges, and innovation programs.</div>
+    </section>
+
+    <section id="skills" class="reveal">
+      <h2 class="section-title">Skills</h2>
+      <div class="skills-grid" id="skillsGrid"></div>
+    </section>
+
+    <section id="timeline" class="reveal">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <h2 class="section-title" style="margin:0;">Experience & Education</h2>
+        <button class="btn" id="addTimelineBtn" style="display:none;">+ Add Entry</button>
+      </div>
+      <div class="timeline" id="timelineList"></div>
+    </section>
+
+    <section id="projects" class="reveal">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <h2 class="section-title" style="margin:0;">Projects</h2>
+        <button class="btn" id="addProjectBtn" style="display:none;">+ Add Project</button>
+      </div>
+      <div class="card-grid" id="projectGrid"></div>
+    </section>
+
+    <section id="contact" class="reveal">
+      <h2 class="section-title">Contact</h2>
+      <div class="glass-card" style="padding:1.2rem;">
+        <form id="contactForm">
+          <input required name="name" placeholder="Name" />
+          <input required name="email" type="email" placeholder="Email" />
+          <input required name="subject" placeholder="Subject" />
+          <textarea required name="message" placeholder="Message"></textarea>
+          <button class="btn btn-primary" type="submit">Send Message</button>
+        </form>
+        <p class="meta" style="margin:.9rem 0 0;">Email: <span data-editable="true" data-key="email">itsparasmittal@gmail.com</span></p>
+        <div class="icon-links" id="socialLinks"></div>
+      </div>
+      <details style="margin-top:1rem;" class="meta">
+        <summary>EmailJS snippet (optional)</summary>
+<pre style="white-space:pre-wrap;">/* Optional EmailJS Integration
+emailjs.init('YOUR_PUBLIC_KEY');
+emailjs.send('SERVICE_ID','TEMPLATE_ID', {name, email, subject, message});
+*/</pre>
+      </details>
+    </section>
+  </main>
+
+  <footer style="padding:2rem 0;text-align:center;color:var(--muted);border-top:1px solid var(--border);margin-top:2rem;">
+    <div class="icon-links" id="footerSocial" style="justify-content:center;"></div>
+    <button id="lockIcon" aria-label="admin">🔒</button>
+    <div class="meta" style="font-size:.8rem;">Admin shortcut: Ctrl + Shift + E</div>
+    <div data-editable="true" data-key="copyright">© <span id="year"></span> Paras Mittal. All rights reserved.</div>
+  </footer>
+
+  <div id="admin-fab">
+    <button class="btn btn-primary small-btn" id="saveBtn">Save Changes</button>
+    <button class="btn small-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="modal" id="projectModal">
+    <div class="glass-card modal-card">
+      <h3 id="projectModalTitle">Project</h3>
+      <form id="projectForm">
+        <input name="title" required placeholder="Project name" />
+        <textarea name="description" required placeholder="Description"></textarea>
+        <input name="tech" placeholder="Tech stack (comma separated)" />
+        <input name="live" placeholder="Live URL" />
+        <input name="github" placeholder="GitHub URL" />
+        <input name="image" type="file" accept="image/*" />
+        <div style="display:flex;justify-content:flex-end;gap:.6rem;">
+          <button type="button" class="btn" data-close="#projectModal">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="timelineModal">
+    <div class="glass-card modal-card">
+      <h3 id="timelineModalTitle">Timeline Entry</h3>
+      <form id="timelineForm">
+        <input name="type" placeholder="Type (Experience/Education)" required />
+        <input name="title" placeholder="Title" required />
+        <input name="organization" placeholder="Organization" required />
+        <input name="period" placeholder="Period" required />
+        <input name="location" placeholder="Location" />
+        <textarea name="description" placeholder="Description"></textarea>
+        <div style="display:flex;justify-content:flex-end;gap:.6rem;">
+          <button type="button" class="btn" data-close="#timelineModal">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'paras_portfolio_v1';
+    const ADMIN_PASSWORD = 'admin123';
+
+    const defaultData = {
+      theme: 'dark',
+      brand: 'P•M',
+      name: 'Paras Mittal',
+      tagline: 'Designing immersive, project-based STEM journeys that turn learners into confident innovators.',
+      about: 'Passionate STEM educator specializing in Makerspace, Robotics, AI, and IoT education, with experience designing scalable curricula and delivering immersive learning experiences across schools, colleges, and innovation programs. Strong background in project-based instruction, lab setup, teacher training, and student mentorship.',
+      heroTyping: 'Senior Makerspace Educator • Robotics & AI Instructor • IoT Mentor',
+      email: 'itsparasmittal@gmail.com',
+      photo: '',
+      social: {
+        linkedin: 'https://www.linkedin.com/in/paras-mittal-363321201/',
+        github: 'https://github.com/itsparasmittal',
+        instagram: 'https://www.instagram.com/roboticsbypm/',
+        twitter: 'https://x.com/itsparasmittal?s=21',
+        youtube: 'https://www.youtube.com/@itsparasmittal'
+      },
+      skills: [
+        ['Robotics & Automation', 96], ['IoT Systems (MQTT/HTTP)', 93], ['Makerspace & Lab Operations', 92],
+        ['Arduino / ESP32 / Micro:bit', 95], ['Python / C/C++ / Embedded C', 90], ['STEM Curriculum Design', 97],
+        ['Simulation (Tinkercad/Wokwi)', 89], ['Teacher Training & Mentorship', 94]
+      ],
+      timeline: [
+        { type:'Experience', title:'Senior Makerspace Educator', organization:'Lighthouse Learning Pvt. Ltd.', period:'12/2025 - Current', location:'Noida, India (Onsite)', description:'Facilitating Makerspace curriculum with robotics, AI, and IoT; mentoring students for hackathons; managing lab operations and independent innovation programs.' },
+        { type:'Experience', title:'Mentor (IoT & Robotics)', organization:'InternsElite Edutech Pvt. Ltd.', period:'09/2025 - Current', location:'India (Remote)', description:'Leading live classes, teaching ESP32, MQTT/HTTP, cloud dashboards, Node-RED, and creating end-to-end 2-month IoT curriculum.' },
+        { type:'Experience', title:'Workshop Instructor (AI & Robotics)', organization:'Aerophantom', period:'07/2025 - Current', location:'Bijnoir, U.P., India (Onsite)', description:'Delivered 2-week K–12 AI & Robotics workshops with simulator-first pedagogy and hands-on project demos.' },
+        { type:'Experience', title:'Lead Instructor & Curriculum Designer', organization:'Cograd', period:'09/2024 - Current', location:'Noida, India (Hybrid)', description:'Designed modular curricula and led Intel AI for Youth workshops, KV teacher capacity programs, and IIT Bombay Techfest mentoring.' },
+        { type:'Experience', title:'Robotics & AI Instructor', organization:'BrightChamps', period:'06/2024 - Current', location:'USA (Remote)', description:'Delivered 2000+ live sessions to 50+ students and built scaffolded robotics labs improving retention and learning outcomes.' },
+        { type:'Education', title:'B.Tech, Electronics & Communication Engineering', organization:'Delhi Technological University', period:'2024', location:'New Delhi, India', description:'CGPA: 7.77' },
+        { type:'Education', title:'CBSE Class XII', organization:'Greenway Modern Sr. Sec. School', period:'2019', location:'New Delhi, India', description:'Score: 88.2%' },
+        { type:'Education', title:'CBSE Class X', organization:'Greenway Modern Sr. Sec. School', period:'2018', location:'New Delhi, India', description:'CGPA: 9.8' }
+      ],
+      projects: [
+        { title:'Smart Dustbin System', description:'Arduino-powered smart dustbin automation with motion-triggered lid control and energy-efficient alert logic.', tech:['Arduino','Sensors','Embedded C'], live:'#', github:'#', image:'' },
+        { title:'IoT Smart Irrigation System', description:'ESP32-based irrigation automation with cloud dashboard, remote status monitoring, and threshold-based watering.', tech:['ESP32','MQTT','ThingSpeak'], live:'#', github:'#', image:'' },
+        { title:'Environmental Monitoring System', description:'Realtime sensing and cloud logging system for temperature/humidity and air quality indicators.', tech:['ESP32','HTTP API','JSON'], live:'#', github:'#', image:'' },
+        { title:'Reaction Based Game', description:'Micro:bit game project with rapid input detection, score logic, and playful interaction design for learners.', tech:['Micro:bit','MakeCode'], live:'#', github:'#', image:'' },
+        { title:'Touch-Based Musical Piano', description:'Quarky and conductive touch interaction project introducing students to digital music interfaces.', tech:['Quarky','STEM Education'], live:'#', github:'#', image:'' },
+        { title:'Paper Piano (Makey Makey)', description:'Creative electronics prototype using conductive paper inputs to build an interactive piano.', tech:['Makey Makey','Creative Tech'], live:'#', github:'#', image:'' }
+      ]
+    };
+
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || structuredClone(defaultData);
+    let editMode = false;
+    let editProjectIndex = null;
+    let editTimelineIndex = null;
+
+    const byId = id => document.getElementById(id);
+    const socialIcons = {
+      linkedin: 'in', github: 'gh', instagram: 'ig', twitter: 'x', youtube: 'yt'
+    };
+
+    function saveState(show = true) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (show) pop('Saved successfully ✓');
+    }
+
+    function pop(text) {
+      const el = byId('successPop');
+      el.textContent = text;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 1800);
+    }
+
+    function renderTheme() {
+      document.body.classList.toggle('light', state.theme === 'light');
+      byId('themeToggle').textContent = state.theme === 'light' ? '☾' : '☀︎';
+    }
+
+    function renderEditableText() {
+      document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.dataset.key;
+        if (state[key] !== undefined) {
+          if (el.querySelector('#year')) return;
+          el.textContent = state[key];
+        }
+      });
+      byId('typing').dataset.source = state.heroTyping;
+    }
+
+    function renderSkills() {
+      byId('skillsGrid').innerHTML = state.skills.map(([name, level], i) => `
+        <article class="glass-card skill-item reveal" style="transition-delay:${i*40}ms">
+          <div class="skill-head"><span data-editable="true" data-skill="${i}" data-field="name">${name}</span><span>${level}%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:${level}%"></div></div>
+        </article>
+      `).join('');
+    }
+
+    function renderTimeline() {
+      byId('timelineList').innerHTML = state.timeline.map((item, i) => `
+        <article class="timeline-item glass-card reveal">
+          <span class="timeline-dot"></span>
+          <div class="meta">${item.type}</div>
+          <h3 data-editable="true" data-timeline="${i}" data-field="title">${item.title}</h3>
+          <div><strong data-editable="true" data-timeline="${i}" data-field="organization">${item.organization}</strong></div>
+          <div class="meta" data-editable="true" data-timeline="${i}" data-field="period">${item.period}</div>
+          <div class="meta" data-editable="true" data-timeline="${i}" data-field="location">${item.location || ''}</div>
+          <p data-editable="true" data-timeline="${i}" data-field="description">${item.description || ''}</p>
+          <div class="timeline-actions">
+            <button class="small-btn" onclick="openTimelineModal(${i})">Edit</button>
+            <button class="small-btn" onclick="deleteTimeline(${i})">Delete</button>
+          </div>
+        </article>
+      `).join('');
+      timelineObserver();
+    }
+
+    function renderProjects() {
+      byId('projectGrid').innerHTML = state.projects.map((p, i) => `
+        <article class="glass-card project-card reveal">
+          <div class="project-thumb">${p.image ? `<img src="${p.image}" alt="${p.title}" />` : 'PROJECT'}</div>
+          <div class="project-body">
+            <h3 data-editable="true" data-project="${i}" data-field="title">${p.title}</h3>
+            <p data-editable="true" data-project="${i}" data-field="description">${p.description}</p>
+            <div class="tags">${(p.tech || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              <a class="btn small-btn" href="${p.live || '#'}" target="_blank">Live</a>
+              <a class="btn small-btn" href="${p.github || '#'}" target="_blank">GitHub</a>
+            </div>
+            <div class="project-actions">
+              <button class="small-btn" onclick="openProjectModal(${i})">Edit</button>
+              <button class="small-btn" onclick="deleteProject(${i})">Delete</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderSocial() {
+      const html = Object.entries(state.social).map(([k, url]) => `
+        <a href="${url}" target="_blank" title="${k}" data-social="${k}">${socialIcons[k] || k[0]}</a>
+      `).join('');
+      byId('socialLinks').innerHTML = html;
+      byId('footerSocial').innerHTML = html;
+    }
+
+    function renderPhoto() {
+      if (state.photo) byId('profileImage').src = state.photo;
+    }
+
+    function renderAll() {
+      renderTheme();
+      renderEditableText();
+      renderSkills();
+      renderTimeline();
+      renderProjects();
+      renderSocial();
+      renderPhoto();
+      revealObserver();
+      initTypewriter();
+      byId('year').textContent = new Date().getFullYear();
+      byId('addProjectBtn').style.display = editMode ? 'inline-flex' : 'none';
+      byId('addTimelineBtn').style.display = editMode ? 'inline-flex' : 'none';
+    }
+
+    function revealObserver() {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+      }, { threshold: .2 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    }
+
+    function timelineObserver() {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+      }, { threshold: .25 });
+      document.querySelectorAll('.timeline-item').forEach(el => io.observe(el));
+    }
+
+    function initTypewriter() {
+      const el = byId('typing');
+      const text = el.dataset.source || '';
+      let i = 0;
+      el.textContent = '';
+      const timer = setInterval(() => {
+        el.textContent = text.slice(0, i++);
+        if (i > text.length) clearInterval(timer);
+      }, 36);
+    }
+
+    function setEditMode(on) {
+      editMode = on;
+      document.body.classList.toggle('edit-mode', on);
+      document.querySelectorAll('[data-editable="true"]').forEach(el => el.contentEditable = on);
+      renderAll();
+      if (on) pop('Edit mode enabled');
+    }
+
+    function attachEvents() {
+      window.addEventListener('scroll', () => {
+        byId('navbar').classList.toggle('shrink', window.scrollY > 30);
+        byId('heroBg').style.setProperty('--parallax', `${window.scrollY * 0.25}px`);
+      });
+
+      byId('themeToggle').onclick = () => {
+        state.theme = state.theme === 'light' ? 'dark' : 'light';
+        renderTheme();
+        saveState(false);
+      };
+
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'e') triggerAdmin();
+      });
+      byId('lockIcon').onclick = triggerAdmin;
+
+      byId('saveBtn').onclick = () => {
+        syncEditableToState();
+        saveState();
+      };
+
+      byId('logoutBtn').onclick = () => setEditMode(false);
+
+      byId('uploadPhotoBtn').onclick = () => byId('photoInput').click();
+      byId('photoInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        state.photo = await fileToBase64(file);
+        renderPhoto();
+        saveState();
+      });
+
+      document.body.addEventListener('input', (e) => {
+        if (!editMode) return;
+        if (e.target.matches('[data-editable="true"]')) {
+          e.target.style.outlineColor = 'var(--accent)';
+        }
+      });
+
+      byId('addProjectBtn').onclick = () => openProjectModal();
+      byId('addTimelineBtn').onclick = () => openTimelineModal();
+
+      byId('contactForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = new FormData(e.target);
+        const subject = encodeURIComponent(form.get('subject'));
+        const body = encodeURIComponent(`Name: ${form.get('name')}\nEmail: ${form.get('email')}\n\n${form.get('message')}`);
+        window.location.href = `mailto:${state.email}?subject=${subject}&body=${body}`;
+        e.target.reset();
+        pop('Message drafted in your email client ✓');
+      });
+
+      document.querySelectorAll('[data-close]').forEach(btn => {
+        btn.onclick = () => document.querySelector(btn.dataset.close).classList.remove('show');
+      });
+
+      byId('projectForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const imgFile = f.image.files[0];
+        const payload = {
+          title: f.title.value,
+          description: f.description.value,
+          tech: f.tech.value.split(',').map(s => s.trim()).filter(Boolean),
+          live: f.live.value || '#',
+          github: f.github.value || '#',
+          image: imgFile ? await fileToBase64(imgFile) : (editProjectIndex !== null ? state.projects[editProjectIndex].image : '')
+        };
+        if (editProjectIndex === null) state.projects.push(payload);
+        else state.projects[editProjectIndex] = payload;
+        byId('projectModal').classList.remove('show');
+        e.target.reset();
+        editProjectIndex = null;
+        renderProjects();
+        saveState();
+      });
+
+      byId('timelineForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const payload = {
+          type: f.type.value,
+          title: f.title.value,
+          organization: f.organization.value,
+          period: f.period.value,
+          location: f.location.value,
+          description: f.description.value
+        };
+        if (editTimelineIndex === null) state.timeline.push(payload);
+        else state.timeline[editTimelineIndex] = payload;
+        byId('timelineModal').classList.remove('show');
+        e.target.reset();
+        editTimelineIndex = null;
+        renderTimeline();
+        saveState();
+      });
+
+      document.body.addEventListener('dblclick', (e) => {
+        if (!editMode) return;
+        const social = e.target.closest('[data-social]');
+        if (social) {
+          const key = social.dataset.social;
+          const val = prompt(`Update ${key} URL:`, state.social[key]);
+          if (val) { state.social[key] = val.trim(); renderSocial(); saveState(); }
+        }
+      });
+    }
+
+    function syncEditableToState() {
+      document.querySelectorAll('[data-editable="true"][data-key]').forEach(el => {
+        state[el.dataset.key] = el.textContent.trim();
+      });
+      document.querySelectorAll('[data-project]').forEach(el => {
+        const i = Number(el.dataset.project), field = el.dataset.field;
+        if (!Number.isNaN(i) && state.projects[i]) state.projects[i][field] = el.textContent.trim();
+      });
+      document.querySelectorAll('[data-timeline]').forEach(el => {
+        const i = Number(el.dataset.timeline), field = el.dataset.field;
+        if (!Number.isNaN(i) && state.timeline[i]) state.timeline[i][field] = el.textContent.trim();
+      });
+      document.querySelectorAll('[data-skill]').forEach(el => {
+        const i = Number(el.dataset.skill);
+        if (!Number.isNaN(i) && state.skills[i]) state.skills[i][0] = el.textContent.trim();
+      });
+    }
+
+    function triggerAdmin() {
+      if (editMode) return;
+      const pass = prompt('Enter admin password');
+      if (pass === ADMIN_PASSWORD) setEditMode(true);
+      else if (pass !== null) pop('Incorrect password');
+    }
+
+    async function fileToBase64(file) {
+      return await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+    }
+
+    window.openProjectModal = function(index = null) {
+      editProjectIndex = index;
+      const modal = byId('projectModal');
+      const f = byId('projectForm');
+      byId('projectModalTitle').textContent = index === null ? 'Add Project' : 'Edit Project';
+      if (index !== null) {
+        const p = state.projects[index];
+        f.title.value = p.title; f.description.value = p.description; f.tech.value = (p.tech||[]).join(', ');
+        f.live.value = p.live || ''; f.github.value = p.github || '';
+      } else f.reset();
+      modal.classList.add('show');
+    }
+
+    window.deleteProject = function(index) {
+      if (confirm('Delete this project?')) {
+        state.projects.splice(index, 1);
+        renderProjects();
+        saveState();
+      }
+    }
+
+    window.openTimelineModal = function(index = null) {
+      editTimelineIndex = index;
+      const modal = byId('timelineModal');
+      const f = byId('timelineForm');
+      byId('timelineModalTitle').textContent = index === null ? 'Add Timeline Entry' : 'Edit Timeline Entry';
+      if (index !== null) {
+        const t = state.timeline[index];
+        f.type.value = t.type; f.title.value = t.title; f.organization.value = t.organization;
+        f.period.value = t.period; f.location.value = t.location || ''; f.description.value = t.description || '';
+      } else f.reset();
+      modal.classList.add('show');
+    }
+
+    window.deleteTimeline = function(index) {
+      if (confirm('Delete this timeline entry?')) {
+        state.timeline.splice(index, 1);
+        renderTimeline();
+        saveState();
+      }
+    }
+
+    window.addEventListener('load', () => {
+      if (localStorage.getItem('portfolio_loader_seen')) byId('loader').classList.add('hide');
+      else {
+        setTimeout(() => byId('loader').classList.add('hide'), 900);
+        localStorage.setItem('portfolio_loader_seen', '1');
+      }
+    });
+
+    attachEvents();
+    renderAll();
+  </script>
+</body>
+</html>
